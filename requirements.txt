@@ -4,3 +4,4 @@ APScheduler
 feedparser
 beautifulsoup4
 requests
+flask
