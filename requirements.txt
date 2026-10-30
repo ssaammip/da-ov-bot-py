@@ -1,0 +1,6 @@
+discord.py
+python-dotenv
+APScheduler
+feedparser
+beautifulsoup4
+requests
