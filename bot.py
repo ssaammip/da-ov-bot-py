@@ -116,7 +116,7 @@ async def on_ready():
 # -----------------------------------------------------------------------------
 @tasks.loop(hours=168)
 async def pondelni_hlaseni():
-    KANAL_ID = 123456789012345678  # 👈 ZDE PONECHTE VAŠE ID KANÁLU
+    KANAL_ID = 1567346984174489732  # 👈 ZDE PONECHTE VAŠE ID KANÁLU
     kanal = bot.get_channel(KANAL_ID)
     if not kanal:
         return
