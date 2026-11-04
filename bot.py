@@ -112,15 +112,17 @@ async def on_ready():
     pondelni_hlaseni.start()
 
 # -----------------------------------------------------------------------------
-# ⏰ AUTOMATICKÉ PONDĚLNÍ HLÁŠENÍ (Proběhne každé pondělí)
+# ⏰ AUTOMATICKÉ PONDĚLNÍ HLÁŠENÍ (Filtruje nadcházející termíny pro aktuální měsíc)
 # -----------------------------------------------------------------------------
 @tasks.loop(hours=168)
 async def pondelni_hlaseni():
-    # ⚠️ Nahraďte číslo níže vaším ID kanálu z KROKU 1
-    KANAL_ID = 1567346984174489732  
+    KANAL_ID = 123456789012345678  # 👈 ZDE PONECHTE VAŠE ID KANÁLU
     kanal = bot.get_channel(KANAL_ID)
     if not kanal:
         return
+
+    dnes = datetime.now()
+    aktualni_mesic = dnes.strftime("%m")  # Zjistí aktuální měsíc (např. '11' pro listopad)
 
     embed = discord.Embed(
         title="📅 Pravidelný pondělní přehled daňových termínů",
@@ -128,12 +130,22 @@ async def pondelni_hlaseni():
         color=0x3498DB
     )
 
-    # Vypíše prvních 5 nejbližších termínů
-    for t in TERMINY_DATABAZE[:5]:
-        role_tags = formatuj_role(t["role"], kanal.guild)
+    # Vyfiltruje pouze termíny, které připadají na aktuální měsíc
+    nalezeno = False
+    for t in TERMINY_DATABAZE:
+        if f".{aktualni_mesic}." in t["datum"]:
+            role_tags = formatuj_role(t["role"], kanal.guild)
+            embed.add_field(
+                name=f"📌 {t['datum']} – {t['popis']}",
+                value=f"Pro role: {role_tags}",
+                inline=False
+            )
+            nalezeno = True
+
+    if not nalezeno:
         embed.add_field(
-            name=f"📌 {t['datum']} – {t['popis']}",
-            value=f"Pro role: {role_tags}",
+            name="ℹ️ Žádné akutní termíny",
+            value="Pro tento měsíc nejsou v hlavní databázi zadané žádné specifické uzávěrky.",
             inline=False
         )
 
