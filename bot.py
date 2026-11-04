@@ -1,4 +1,24 @@
 import os
+import threading
+from flask import Flask
+
+# Miniaturní web server pro uspokojení Render Web Service
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "Daňový hlídač běží 24/7!"
+
+def run_flask():
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host='0.0.0.0', port=port)
+
+# Spuštění serveru na pozadí v samostatném vlákně
+threading.Thread(target=run_flask, daemon=True).start()
+
+# -----------------------------------------------------------------------------
+# ZDE NÁSLEDUJE VÁŠ STÁVAJÍCÍ KÓD BOTA (import discord, intents, příkazy...)
+# -----------------------------------------------------------------------------import os
 import discord
 from discord.ext import commands, tasks
 from datetime import datetime
